@@ -25,3 +25,48 @@
 |Request|⏳ 开发中|劫持 Request 请求对象，精细化拦截请求配置|
 |JSON\.parse|⏳ 开发中|劫持 JSON 解析方法，监听/篡改全局解析数据|
 |JSON\.stringify|⏳ 开发中|劫持 JSON 序列化方法，拦截全局数据序列化行为|
+
+
+## 使用案例
+```js
+// 假设hook的句柄是hookHandle
+
+// 修改响应结果
+hookHandle.on.req.add(function(e, opts) {
+    const {request, controller} = opts;
+    if (request.url.startsWith('https://www.xxx.com/api/profile')) {
+        controller.respondWith(new Response({
+            JSON.stringify({
+                code: 0,
+                msg: null,
+                data: {
+                    id: 1,
+                    is_vip: true,
+                    phone: 13800000000,
+                }
+            }),
+            {
+                status: 200,
+                statusText: 'Created',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        }))
+    }
+    else if (request.url.startsWith('https://www.xxx.com/api/xxx')) {
+        // 如果是要修改响应后的结果
+        const res = fetch(opts.request).then(res => {
+            // 根据响应头判断用哪个解析，案例展示：假设响应数据是json类型
+            return res.json();
+        }).then(res => {
+            // 开始修改响应
+            // code...
+            return res; // 返回响应
+        })
+        // 支持异步结果或异步函数
+        controller.respondWith(res);
+    }
+})
+
+```

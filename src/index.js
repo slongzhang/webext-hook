@@ -45,7 +45,8 @@ const main = function (appName) {
             },
         },
     };
-
+    // 预留卸载历史请求的钩子
+    let unHistoryHook = () => {};
     if (isHookEnabled(hook.xhr) || isHookEnabled(hook.fetch)) {
         const reqFns = createFnsRegistrar();
         const onReq = async (engine, opts) => {
@@ -82,6 +83,8 @@ const main = function (appName) {
             }
         };
         resFns(historyRecorder);
+        // 卸载历史响应的hook
+        unHistoryHook = () => resFns.delete(historyRecorder);
 
         // 判断启用钩子
         if (isHookEnabled(hook.xhr)) {
@@ -100,8 +103,8 @@ const main = function (appName) {
             interceptor.on('response', (opts) => onRes(engine, opts));
         }
 
-        handler.on.req = onReq;
-        handler.on.res = onRes;
+        handler.on.req = reqFns;
+        handler.on.res = resFns;
         handler.history = history;
     }
 
@@ -217,6 +220,8 @@ const main = function (appName) {
         };
         handler.on.jsonEncode = hookFns;
     }
+    // 开发调试使用
+    globalThis.slogHook = handler;
 };
 
 export default main();
