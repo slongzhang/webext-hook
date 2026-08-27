@@ -1,0 +1,13 @@
+.DS_Store
+.idea/
+.vite-ssg-dist
+.vite-ssg-temp
+*.crx
+*.local
+*.log
+*.pem
+*.xpi
+*.zip
+dist
+dist-ssr
+node_modules

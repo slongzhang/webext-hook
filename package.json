@@ -1,0 +1,21 @@
+{
+  "name": "webext-hook",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite build --mode development",
+    "build": "vite build --mode development && vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "terser": "^5.39.2",
+    "typescript": "^7.0.2",
+    "vite": "^6.3.5"
+  },
+  "dependencies": {
+    "@mswjs/interceptors": "^0.42.3"
+  }
+}
